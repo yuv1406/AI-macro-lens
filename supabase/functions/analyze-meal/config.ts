@@ -2,7 +2,7 @@
 
 export const CONFIG = {
     // Rate limiting
-    RATE_LIMIT_DAILY: 20,
+    RATE_LIMIT_DAILY: 7,
 
     // Cost controls (in INR) - TODO: RESTORE TO 80 BEFORE PRODUCTION!
     COST_LIMIT_MONTHLY_INR: 100,  // Temporarily disabled for development
