@@ -86,7 +86,7 @@ export async function analyzeTextWithGemini(
                     ],
                     generationConfig: {
                         temperature: 0.3, // Lower temperature for more consistent parsing
-                        maxOutputTokens: 512,
+                        maxOutputTokens: 2048, // Increased from 512 to prevent truncation
                     },
                 }),
                 signal: AbortSignal.timeout(40000), // 40 seconds for text analysis (increased from 15s)
@@ -151,7 +151,14 @@ function parseTextAnalysisResponse(text: string): MacroEstimate {
         parsed = JSON.parse(cleaned);
     } catch (parseError) {
         console.error('JSON parse failed:', parseError);
-        throw new Error(`Failed to parse AI response as JSON`);
+        console.error('Attempted to parse:', cleaned);
+
+        // Check if response appears truncated
+        if (cleaned.endsWith(',') || !cleaned.endsWith('}')) {
+            throw new Error(`AI response appears truncated. Received: ${cleaned.substring(0, 100)}...`);
+        }
+
+        throw new Error(`Failed to parse AI response as JSON. Response: ${cleaned.substring(0, 200)}`);
     }
 
     // Validate structure
